@@ -1,6 +1,6 @@
-from stocks_app.models import User
+from .models import User
 from rest_framework import viewsets, permissions
-from . serializers import UserSerializer
+from .serializers import UserSerializer
 
 #User Viewset
 class UserViewSet(viewsets.ModelViewSet):
