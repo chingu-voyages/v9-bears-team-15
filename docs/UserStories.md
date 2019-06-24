@@ -22,4 +22,6 @@
 - [ ] **User Story #16** user can create a profile and have a public display viewable by other users.
 - [ ] **User Story #17** backend will refresh the entire list of stocks owned by users once a day.
 
+## Wishlist
+- [ ] Achievement Toast System: Having a system that tracks achievement goals, and displays those achievements with a small pop up toast in the UI.
 
