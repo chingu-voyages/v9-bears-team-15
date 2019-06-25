@@ -7,8 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev":"webpack --mode development --watch ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js",
-    "build":"webpack --mode production ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js"
+    "dev": "webpack --mode development --watch ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js",
+    "build": "webpack --mode production ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,9 @@
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
