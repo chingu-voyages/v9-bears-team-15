@@ -1,4 +1,4 @@
-import { FETCH_STOCK } from '../actions/types';
+import { FETCH_STOCK, FETCH_ERROR } from '../actions/types';
 
 const initialState = {
     symbol: '',
@@ -9,6 +9,7 @@ export default function (state = initialState, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_STOCK:
+        case FETCH_ERROR:
             return {
                 ...state,
                 symbol: payload.symbol,

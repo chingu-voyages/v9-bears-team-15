@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { initialStockSetup, fetchPrice } from '../../actions/stocks';
+import { fetchPrice } from '../../actions/stocks';
 import PropType from 'prop-types';
 
 export class StockSearch extends Component {
@@ -42,4 +42,4 @@ const mapStateToProps = state => ({
     lastSalePrice: state.stocksReducer.lastSalePrice
 });
 
-export default connect(mapStateToProps, { initialStockSetup, fetchPrice })(StockSearch);
+export default connect(mapStateToProps, { fetchPrice })(StockSearch);
