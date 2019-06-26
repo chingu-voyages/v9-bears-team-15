@@ -12,10 +12,6 @@ export class StockSearch extends Component {
         fetchPrice: PropType.func.isRequired
     }
 
-    componentDidMount() {
-        this.props.initialStockSetup();
-    }
-
     onChange = (e) => this.setState({ [e.target.name]:e.target.value });
 
     searchStock = (e) => {

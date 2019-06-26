@@ -1,15 +1,5 @@
-import { SETUP_STOCK, FETCH_STOCK } from '../actions/types';
+import { FETCH_STOCK } from '../actions/types';
 import axios from 'axios';
-
-export const initialStockSetup = () => {
-    return {
-        type: SETUP_STOCK,
-        payload: {
-            symbol: 'SNAP',
-            lastSalePrice: 14.52
-        }
-    }
-}
 
 export const fetchPrice = symbol => dispatch => {
     console.log(symbol);
