@@ -25,8 +25,9 @@ export class StockSearch extends Component {
         return (
             <Fragment>
                 <form onSubmit={this.searchStock}>
-                    <label htmlFor="name">Enter Stock:</label>
+                    <label htmlFor="name">Enter Stock Symbol:</label>
                     <input type="text" name="name" onChange={this.onChange} value={name} />
+                    <p>Examples include AAPL(Apple), ATVI(Activision), etc</p>
                 </form>
                 <p>
                     { symbol && lastSalePrice ? (`Stock: ${symbol} Price: ${lastSalePrice}`):('No Stock Selected')}
