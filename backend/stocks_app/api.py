@@ -1,11 +1,11 @@
-from .models import User
+from .models import Stock
 from rest_framework import viewsets, permissions
-from .serializers import UserSerializer
+from .serializers import StockSerializer
 
 #User Viewset
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+class StockViewSet(viewsets.ModelViewSet):
+    queryset = Stock.objects.all()
     permission_classes = [
         permissions.AllowAny
     ]
-    serializer_class = UserSerializer
+    serializer_class = StockSerializer
