@@ -7,15 +7,15 @@ import store from '../store';
 
 /* Components */
 import StockSearch from './stocks/StockSearch';
+import StockList from './stocks/StockList';
 
 class App extends Component {
     render() {
         return(
-            <Provider store={store}>
-                <Fragment>
-                    <h1>Bears Stock Game!</h1>
-                    <StockSearch />
-                </Fragment>
+            <Provider store={store}>    
+                <h1>Bears Stock Game!</h1>
+                <StockSearch />
+                <StockList />
             </Provider>
         )
     }
