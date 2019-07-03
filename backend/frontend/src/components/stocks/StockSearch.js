@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { fetchPrice } from '../../actions/stocks';
+import { fetchPrice, purchaseStock } from '../../actions/stocks';
 import PropType from 'prop-types';
 
 export class StockSearch extends Component {
@@ -9,7 +9,8 @@ export class StockSearch extends Component {
     }
 
     static propTypes = {
-        fetchPrice: PropType.func.isRequired
+        fetchPrice: PropType.func.isRequired,
+        purchaseStock: PropType.func.isRequired
     }
 
     onChange = (e) => this.setState({ [e.target.name]:e.target.value });
@@ -29,9 +30,17 @@ export class StockSearch extends Component {
                     <input type="text" name="name" onChange={this.onChange} value={name} />
                     <p>Examples include AAPL(Apple), ATVI(Activision), etc</p>
                 </form>
-                <p>
-                    { symbol && lastSalePrice ? (`Stock: ${symbol} Price: ${lastSalePrice}`):('No Stock Selected')}
-                </p>
+                { symbol && lastSalePrice ? (
+                    <Fragment>
+                        <p>{`Stock: ${symbol} Price: ${lastSalePrice}`}</p>
+                        <button onClick={()=>this.props.purchaseStock({
+                            stockSymbol:symbol,
+                            purchasePrice:lastSalePrice,
+                            currentPrice:lastSalePrice
+                        })}>Purchase</button>
+                    </Fragment>):
+                    (<p>No Stock Selected</p>)}
+              
             </Fragment>
         )
     }
@@ -42,4 +51,4 @@ const mapStateToProps = state => ({
     lastSalePrice: state.stocksReducer.lastSalePrice
 });
 
-export default connect(mapStateToProps, { fetchPrice })(StockSearch);
+export default connect(mapStateToProps, { fetchPrice, purchaseStock })(StockSearch);

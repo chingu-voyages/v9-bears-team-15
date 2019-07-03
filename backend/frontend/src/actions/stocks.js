@@ -1,4 +1,4 @@
-import { FETCH_STOCK, FETCH_ERROR, FETCH_STOCKLIST } from '../actions/types';
+import { FETCH_STOCK, FETCH_ERROR, FETCH_STOCKLIST, PURCHASE_SUCCESSFUL } from '../actions/types';
 import axios from 'axios';
 
 export const fetchPrice = symbol => dispatch => {
@@ -29,6 +29,21 @@ export const fetchStockList = () => dispatch => {
     .then(response => {
         dispatch({
             type: FETCH_STOCKLIST,
+            payload: response.data
+        })
+    });
+}
+
+export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice }) => dispatch => {
+    const body = {
+        stockSymbol,
+        purchasePrice,
+        currentPrice
+    }
+    axios.post('/api/stocks/', body)
+    .then(response => {
+        dispatch({
+            type:PURCHASE_SUCCESSFUL,
             payload: response.data
         })
     });
