@@ -1,4 +1,8 @@
-import { FETCH_STOCK, FETCH_ERROR, FETCH_STOCKLIST, PURCHASE_SUCCESSFUL } from '../actions/types';
+import { FETCH_STOCK, 
+         FETCH_ERROR, 
+         FETCH_STOCKLIST, 
+         PURCHASE_SUCCESSFUL,
+         SELL_SUCCESSFUL } from '../actions/types';
 import axios from 'axios';
 
 export const fetchPrice = symbol => dispatch => {
@@ -47,5 +51,17 @@ export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice }) => d
             payload: response.data
         })
     });
+}
+
+export const sellStock = (stock_id) => dispatch => {
+    axios.delete(`/api/stocks/${stock_id}/`)
+    .then(response => {
+        if (response.status===204) {
+            dispatch({
+                type: SELL_SUCCESSFUL,
+                payload:stock_id
+            })
+        }
+    })
 }
 

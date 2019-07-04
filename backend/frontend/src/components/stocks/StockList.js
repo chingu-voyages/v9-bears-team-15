@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import PropType from 'prop-types';
-import { fetchStockList } from '../../actions/stocks';
+import { fetchStockList, sellStock } from '../../actions/stocks';
 
 
 export class StockList extends Component {
 
     static propTypes = {
         stocks: PropType.array.isRequired,
-        fetchStockList: PropType.func.isRequired
+        fetchStockList: PropType.func.isRequired,
+        sellStock: PropType.func.isRequired
     }
 
     componentDidMount(){
@@ -27,6 +28,7 @@ export class StockList extends Component {
                             <th>Purchase Price</th>
                             <th>Purchased On</th>
                             <th>Last Updated</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +39,7 @@ export class StockList extends Component {
                                 <td>{stock.purchasePrice}</td>
                                 <td>{stock.purchase_at}</td>
                                 <td>{stock.updated_at}</td>
+                                <td><button onClick={()=>this.props.sellStock(stock.id)}>Sell Shares</button></td>
                             </tr>
                     ))}
                     </tbody>
@@ -50,4 +53,4 @@ const mapStateToProps = (state) => ({
     stocks : state.stockListReducer.stocks
 })
 
-export default connect(mapStateToProps, { fetchStockList })(StockList);
+export default connect(mapStateToProps, { fetchStockList, sellStock })(StockList);
