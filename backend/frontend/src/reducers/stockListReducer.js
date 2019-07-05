@@ -1,4 +1,4 @@
-import { FETCH_STOCKLIST } from '../actions/types';
+import { FETCH_STOCKLIST, PURCHASE_SUCCESSFUL, SELL_SUCCESSFUL } from '../actions/types';
 
 const initialState = {
     stocks:[]
@@ -11,6 +11,16 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 stocks:payload
+            }
+        case PURCHASE_SUCCESSFUL:
+            return {
+                ...state,
+                stocks:[...state.stocks, payload]
+            }
+        case SELL_SUCCESSFUL:
+            return {
+                ...state,
+                stocks:state.stocks.filter(stock => (stock.id !== payload))
             }
         default:
             return state;
