@@ -13,6 +13,11 @@ class StockViewSet(viewsets.ModelViewSet):
     ]
     serializer_class = StockSerializer
 
+    def callStockAPI(self, symbol):
+        url = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey=YD43NGRDHKUNLAFD'.format(symbol)
+        r = requests.get(url)
+        return r.json()
+
     @list_route(methods=['get'])
     def fetch_stock(self, request):
         url = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey=YD43NGRDHKUNLAFD'.format(request.query_params['symbol'])
@@ -23,5 +28,8 @@ class StockViewSet(viewsets.ModelViewSet):
     def update_stocks(self, request):
         arr= []
         for stock in Stock.objects.all():
-            arr.append(stock.stockSymbol)
-        return Response({'stockSymbols':arr})
+            stockResults = self.callStockAPI(stock.stockSymbol)
+            stock.currentPrice = stockResults["Global Quote"]["05. price"]
+            stock.save(update_fields=['currentPrice'])
+        return Response({'stocks':'stocks updated'})
+        
