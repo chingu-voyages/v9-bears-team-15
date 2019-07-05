@@ -18,3 +18,10 @@ class StockViewSet(viewsets.ModelViewSet):
         url = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey=YD43NGRDHKUNLAFD'.format(request.query_params['symbol'])
         r = requests.get(url)
         return Response(r.json()['Global Quote'])
+
+    @list_route(methods=['get'])
+    def update_stocks(self, request):
+        arr= []
+        for stock in Stock.objects.all():
+            arr.append(stock.stockSymbol)
+        return Response({'stockSymbols':arr})
