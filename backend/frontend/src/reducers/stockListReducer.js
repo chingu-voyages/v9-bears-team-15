@@ -1,4 +1,4 @@
-import { FETCH_STOCKLIST, PURCHASE_SUCCESSFUL, SELL_SUCCESSFUL } from '../actions/types';
+import { FETCH_STOCKLIST, PURCHASE_SUCCESSFUL, SELL_SUCCESSFUL, UPDATE_PRICE } from '../actions/types';
 
 const initialState = {
     stocks:[]
