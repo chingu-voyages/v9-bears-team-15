@@ -5,7 +5,10 @@ import PropType from 'prop-types';
 
 export class StockSearch extends Component {
     state = {
-        name: ''
+        name: '',
+        minRange: 1,
+        maxRange: 50,
+        amount: 1
     }
 
     static propTypes = {
@@ -15,9 +18,11 @@ export class StockSearch extends Component {
 
     onChange = (e) => this.setState({ [e.target.name]:e.target.value });
 
+
     searchStock = (e) => {
         e.preventDefault();
         this.props.fetchPrice(this.state.name);
+        this.setState({amount:1})
     }
     
     render() {
@@ -33,10 +38,21 @@ export class StockSearch extends Component {
                 { symbol && lastSalePrice ? (
                     <Fragment>
                         <p>{`Stock: ${symbol} Price: ${lastSalePrice}`}</p>
+                        <label htmlFor='amount'>Quanity of Shares:{this.state.amount}</label>
+                        <input 
+                            type='range' 
+                            name='amount' 
+                            min={this.state.minRange}
+                            max={this.state.maxRange}
+                            value={this.state.amount}
+                            steps='1'
+                            onChange={this.onChange}
+                        />
                         <button onClick={()=>this.props.purchaseStock({
                             stockSymbol:symbol,
                             purchasePrice:lastSalePrice,
-                            currentPrice:lastSalePrice
+                            currentPrice:lastSalePrice,
+                            quantity:this.state.amount
                         })}>Purchase</button>
                     </Fragment>):
                     (<p>No Stock Selected</p>)}

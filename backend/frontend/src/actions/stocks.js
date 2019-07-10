@@ -1,5 +1,6 @@
 import { FETCH_STOCK, 
          FETCH_ERROR, 
+         UPDATE_PRICE,
          FETCH_STOCKLIST, 
          PURCHASE_SUCCESSFUL,
          SELL_SUCCESSFUL } from '../actions/types';
@@ -21,11 +22,12 @@ export const fetchPrice = symbol => dispatch => {
                 type: FETCH_ERROR,
                 payload: {
                     symbol: 'Fetch Error',
-                    lastSalePrice: 9999
+                    lastSalePrice: null
                 }
             })
         }
     })
+    .catch(err => console.log(err));
 }
 
 export const fetchStockList = () => dispatch => {
@@ -35,14 +37,27 @@ export const fetchStockList = () => dispatch => {
             type: FETCH_STOCKLIST,
             payload: response.data
         })
-    });
+    })
+    .catch(err => console.log(err));
 }
 
-export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice }) => dispatch => {
+export const updateStockPrice = () => dispatch => {
+    axios.get('/api/stocks/update_stocks/')
+    .then(response => {
+        dispatch({
+            type: UPDATE_PRICE,
+            payload: response.data
+        })
+    })
+    .catch(err => console.log(err));
+}
+
+export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice, quantity }) => dispatch => {
     const body = {
         stockSymbol,
         purchasePrice,
-        currentPrice
+        currentPrice,
+        quantity
     }
     axios.post('/api/stocks/', body)
     .then(response => {
@@ -50,7 +65,8 @@ export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice }) => d
             type:PURCHASE_SUCCESSFUL,
             payload: response.data
         })
-    });
+    })
+    .catch(err => console.log(err));
 }
 
 export const sellStock = (stock_id) => dispatch => {
@@ -63,5 +79,6 @@ export const sellStock = (stock_id) => dispatch => {
             })
         }
     })
+    .catch(err => console.log(err));
 }
 
