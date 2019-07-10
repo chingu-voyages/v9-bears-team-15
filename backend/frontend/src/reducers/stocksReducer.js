@@ -1,4 +1,4 @@
-import { FETCH_STOCK, FETCH_ERROR } from '../actions/types';
+import { FETCH_STOCK, FETCH_ERROR, CLEAR_STOCK } from '../actions/types';
 
 const initialState = {
     symbol: '',
@@ -14,6 +14,12 @@ export default function (state = initialState, action) {
                 ...state,
                 symbol: payload.symbol,
                 lastSalePrice: payload.lastSalePrice
+            }
+        case CLEAR_STOCK: 
+            return {
+                ...state,
+                symbol:'',
+                lastSalePrice: null
             }
         default:
             return state;

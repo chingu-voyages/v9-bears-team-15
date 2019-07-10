@@ -3,7 +3,9 @@ import { FETCH_STOCK,
          UPDATE_PRICE,
          FETCH_STOCKLIST, 
          PURCHASE_SUCCESSFUL,
-         SELL_SUCCESSFUL } from '../actions/types';
+         PURCHASE_EXISTING_SUCCESSFUL,
+         SELL_SUCCESSFUL,
+         CLEAR_STOCK } from '../actions/types';
 import axios from 'axios';
 
 export const fetchPrice = symbol => dispatch => {
@@ -64,9 +66,27 @@ export const purchaseStock = ({ stockSymbol, purchasePrice, currentPrice, quanti
         dispatch({
             type:PURCHASE_SUCCESSFUL,
             payload: response.data
-        })
+        });
+        dispatch({type: CLEAR_STOCK});
     })
     .catch(err => console.log(err));
+}
+
+export const purchaseExistingStock = (id, quantity) => dispatch => {
+    const body = {
+        quantity
+    }
+    axios.patch(`/api/stocks/${id}/`, body)
+    .then(response => {
+        dispatch({
+            type: PURCHASE_EXISTING_SUCCESSFUL,
+            payload: response.data
+        })
+        dispatch({type: CLEAR_STOCK});
+    })
+    .catch(err => console.log(err));
+
+
 }
 
 export const sellStock = (stock_id) => dispatch => {
