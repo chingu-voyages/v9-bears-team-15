@@ -1,23 +1,47 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { fetchPrice, purchaseStock } from '../../actions/stocks';
+import { fetchPrice, purchaseStock, purchaseExistingStock } from '../../actions/stocks';
 import PropType from 'prop-types';
 
 export class StockSearch extends Component {
     state = {
-        name: ''
+        name: '',
+        minRange: 1,
+        maxRange: 50,
+        amount: 1
     }
 
     static propTypes = {
         fetchPrice: PropType.func.isRequired,
-        purchaseStock: PropType.func.isRequired
+        purchaseStock: PropType.func.isRequired,
+        purchaseExistingStock: PropType.func.isRequired,
+        stocks: PropType.array
     }
 
     onChange = (e) => this.setState({ [e.target.name]:e.target.value });
 
+
     searchStock = (e) => {
         e.preventDefault();
         this.props.fetchPrice(this.state.name);
+        this.setState({amount:1})
+    }
+
+    purchaseShares = () => {
+        const stock = this.props.stocks.find(stock => stock.stockSymbol === this.props.symbol);
+        if (!stock)
+        {
+            const { symbol, lastSalePrice } = this.props;
+            this.props.purchaseStock({
+                stockSymbol:symbol,
+                purchasePrice:lastSalePrice,
+                currentPrice:lastSalePrice,
+                quantity:this.state.amount
+            })
+        } else {
+            const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
+            this.props.purchaseExistingStock(stock.id, newAmount);
+        }
     }
     
     render() {
@@ -33,11 +57,17 @@ export class StockSearch extends Component {
                 { symbol && lastSalePrice ? (
                     <Fragment>
                         <p>{`Stock: ${symbol} Price: ${lastSalePrice}`}</p>
-                        <button onClick={()=>this.props.purchaseStock({
-                            stockSymbol:symbol,
-                            purchasePrice:lastSalePrice,
-                            currentPrice:lastSalePrice
-                        })}>Purchase</button>
+                        <label htmlFor='amount'>Quanity of Shares:{this.state.amount}</label>
+                        <input 
+                            type='range' 
+                            name='amount' 
+                            min={this.state.minRange}
+                            max={this.state.maxRange}
+                            value={this.state.amount}
+                            steps='1'
+                            onChange={this.onChange}
+                        />
+                        <button onClick={this.purchaseShares}>Purchase</button>
                     </Fragment>):
                     (<p>No Stock Selected</p>)}
               
@@ -48,7 +78,8 @@ export class StockSearch extends Component {
 
 const mapStateToProps = state => ({
     symbol: state.stocksReducer.symbol,
-    lastSalePrice: state.stocksReducer.lastSalePrice
+    lastSalePrice: state.stocksReducer.lastSalePrice,
+    stocks : state.stockListReducer.stocks
 });
 
-export default connect(mapStateToProps, { fetchPrice, purchaseStock })(StockSearch);
+export default connect(mapStateToProps, { fetchPrice, purchaseStock, purchaseExistingStock })(StockSearch);
