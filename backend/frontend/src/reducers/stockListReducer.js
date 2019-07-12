@@ -1,4 +1,4 @@
-import { FETCH_STOCKLIST, PURCHASE_SUCCESSFUL, SELL_SUCCESSFUL } from '../actions/types';
+import { FETCH_STOCKLIST, PURCHASE_SUCCESSFUL, SELL_SUCCESSFUL, UPDATE_PRICE, PURCHASE_EXISTING_SUCCESSFUL } from '../actions/types';
 
 const initialState = {
     stocks:[]
@@ -7,6 +7,7 @@ const initialState = {
 export default function (state = initialState, action) {
     const { type, payload } = action;
     switch (type) {
+        case UPDATE_PRICE:
         case FETCH_STOCKLIST:
             return {
                 ...state,
@@ -16,6 +17,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 stocks:[...state.stocks, payload]
+            }
+        case PURCHASE_EXISTING_SUCCESSFUL:
+            return {
+                ...state,
+                stocks:state.stocks.map(stock => stock.id !== payload.id ? stock : payload )
             }
         case SELL_SUCCESSFUL:
             return {
