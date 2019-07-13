@@ -26,6 +26,38 @@ router.get('/fetch_stock/:symbol', (req, res) => {
         .catch(err => res.status(400).json({"error":"Invalid call"}));
 })
 
+// @route GET api/stocks/update_stocks
+// @description Update All Currently Owned Stocks
+// @access Protected (Public for the moment)
+router.get('/update_stocks',async (req, res) => {
+    //FOLLOW Node-todo-api Patch example 
+    // const stocks = await Stock.find();
+    // stocks.map(stock => {
+    //     Stock.findOneAndUpdate({symbol: stock.symbol})
+    //     .then(async foundStock => {
+    //         const newPrice = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${stock_key}`)
+    //                 if (results.data["Global Quote"]) {
+    //                     stock.currentPrice = results.data["Global Quote"]["05. price"];
+    //                 } else {
+    //                     res.status(400).json({"msg":"Exceeded Stock API Quota Call"});
+    //                 }
+    //     })
+    // })
+        // .then(stocks => {
+        //     stocks.map(async stock => {
+        //         console.log(stock.symbol);
+        //         const results = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${stock_key}`)
+        //         if (results.data["Global Quote"]) {
+        //             stock.currentPrice = results.data["Global Quote"]["05. price"];
+        //         } else {
+        //             res.status(400).json({"msg":"Exceeded Stock API Quota Call"});
+        //         }
+        //     });
+        // })
+        // .catch(err => res.status(400).json({'err':err}));
+    res.json({"msg":"stocks updated!"});
+})
+
 // @route POST api/stocks
 // @description Add a Stock Purchase
 // @access Protected (Public for the moment)
