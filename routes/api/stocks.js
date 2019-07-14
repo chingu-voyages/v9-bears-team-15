@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const stock_key = require('../../config/keys').stock_key;
 const { ObjectID } = require('mongodb');
+const auth = require('../../middleware/auth');
 
 // Stock Model
 const Stock = require('../../models/Stock');
@@ -32,10 +33,10 @@ async function _stockLookup(symbol) {
     return response.data;
 }
 
-// @route GET api/stocks/update_stocks
-// @description Update All Currently Owned Stocks
-// @access Protected (Public for the moment)
-router.get('/update_stocks',async (req, res) => {
+// @route           GET api/stocks/update_stocks
+// @description     Update All Currently Owned Stocks
+// @access          Private
+router.get('/update_stocks',auth, async (req, res) => {
     //FOLLOW Node-todo-api Patch example 
     const stocks = await Stock.find();
     let updatedStocks;

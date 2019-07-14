@@ -1,8 +1,9 @@
-// User model 
 const User = require('../../models/User');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 //@route    POST api/users
 //@desc     Register a new user
@@ -20,20 +21,30 @@ router.post('/', (req, res)=> {
         const newUser = new User({
             username, email, password
         })
+        //TODO: refactor using async/await to avoid promise then nesting
         bcrypt.genSalt(10, (err, salt)=> {
             bcrypt.hash(newUser.password, salt, (err, hash)=> {
                 if (err) throw err;
                 newUser.password = hash;
                 newUser.save()
                     .then(user => {
-                        res.json({
-                            user: {
-                                id: user.id,
-                                username: user.username,
-                                email: username.email,
-                                cashOnHand: user.cashOnHand
+                        jwt.sign(
+                            { id: user.id },
+                            config.get('jwtSecret'),
+                            { expiresIn: 3600 },
+                            (err, token) => {
+                                if(err) throw err; 
+                                res.json({
+                                    token,
+                                    user: {
+                                        id: user.id,
+                                        username: user.username,
+                                        email: user.email,
+                                        cashOnHand: user.cashOnHand
+                                    }
+                                })
                             }
-                        })
+                        )  
                     });
             })
         })
