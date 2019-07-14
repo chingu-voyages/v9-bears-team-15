@@ -56,14 +56,16 @@ router.get('/update_stocks',async (req, res) => {
             res.status(400).json({msg:"Symbol Lookup Quota Exceeded"});
         }
     }, {});
-    stocks.forEach(async stock => {
-        console.log(stock._id);
-        await Stock.findOneAndUpdate({
-            _id:stock._id
-        },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() }})
-    })
-    res.json({stocks});
+    stocks.map(async stock => await _updateEachStock(stock, updatedPrices));
+    res.json(stocks);
 });
+ 
+
+function _updateEachStock(stock, updatedPrices) {
+    return Stock.findOneAndUpdate({
+        _id:stock._id
+    },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() }})
+}
 
     
 
@@ -74,6 +76,7 @@ router.post('/', (req, res) => {
     const stockInfo = {
         symbol: req.body.symbol,
         purchasePrice: req.body.purchasePrice,
+        currentPrice: req.body.purchasePrice,
         quantity: req.body.quantity || 1
     }
     const newStock = new Stock(stockInfo);

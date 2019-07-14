@@ -47,8 +47,8 @@ export class StockList extends Component {
                         <tr>
                             <th>Stock Symbol</th>
                             <th>Shares</th>
-                            <th>Current Price</th>
                             <th>Purchase Price</th>
+                            <th>Current Price</th>
                             <th>Purchased On</th>
                             <th>Last Updated</th>
                             <th></th>
@@ -59,10 +59,10 @@ export class StockList extends Component {
                             <tr key={i}>
                                 <td>{stock.symbol}</td>
                                 <td>{stock.quantity}</td>
-                                <td>{stock.currentPrice}</td>
                                 <td>{stock.purchasePrice}</td>
+                                <td>{stock.currentPrice}</td>
                                 <td>{stock.purchasedOn}</td>
-                                <td>{stock.updated}</td>
+                                <td>{stock.updatedOn}</td>
                                 <td><button onClick={()=>this.props.sellStock(stock._id)}>Sell Shares</button></td>
                             </tr>
                     ))}
