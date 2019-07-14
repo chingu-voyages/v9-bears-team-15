@@ -1,14 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
-const bodyParser = require('body-parser');
 
 const stocks = require('./routes/api/stocks');
+const users = require('./routes/api/users');
 //Sets up api/stocks/ as a route
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 const db = require('./config/keys').mongoURI;
 
@@ -19,6 +19,7 @@ mongoose
     .catch(err => console.log(err));
 
 app.use('/api/stocks', stocks);
+app.use('/api/users', users)
 
 const port = process.env.PORT || 5000;
 
