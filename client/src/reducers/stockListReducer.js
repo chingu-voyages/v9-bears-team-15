@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
         case PURCHASE_EXISTING_SUCCESSFUL:
             return {
                 ...state,
-                stocks:state.stocks.map(stock => stock.id !== payload.id ? stock : payload )
+                stocks:state.stocks.map(stock => stock._id !== payload._id ? stock : payload )
             }
         case SELL_SUCCESSFUL:
             return {

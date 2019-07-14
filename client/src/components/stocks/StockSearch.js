@@ -39,7 +39,7 @@ export class StockSearch extends Component {
             })
         } else {
             const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
-            this.props.purchaseExistingStock(stock.id, newAmount);
+            this.props.purchaseExistingStock(stock._id, newAmount);
         }
     }
     

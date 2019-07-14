@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const stock_key = require('../../config/keys').stock_key;
+const { ObjectID } = require('mongodb');
 
 // Stock Model
 const Stock = require('../../models/Stock');
@@ -56,15 +57,19 @@ router.get('/update_stocks',async (req, res) => {
             res.status(400).json({msg:"Symbol Lookup Quota Exceeded"});
         }
     }, {});
-    stocks.map(async stock => await _updateEachStock(stock, updatedPrices));
-    res.json(stocks);
+    try {
+        const arr = await Promise.all(stocks.map(async stock => await _updateEachStock(stock, updatedPrices)));
+        res.json(arr);
+    } catch (err) {
+        res.status(400).json({"error":err});
+    } 
 });
  
 
 function _updateEachStock(stock, updatedPrices) {
     return Stock.findOneAndUpdate({
         _id:stock._id
-    },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() }})
+    },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() } }, { new:true })
 }
 
     
@@ -84,6 +89,28 @@ router.post('/', (req, res) => {
         .then(stock => res.json(stock))
         .catch(err => res.status(400).json({"error":"Invalid data provided"}));
 })
+
+// @route POST api/stocks/:id
+// @description Purchase more shares of a currently owned stock
+// @access Protected (Public for the moment)
+router.patch('/:id', (req, res)=> {
+    const id = req.params.id;
+    const { quantity } = req.body;
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+    }
+    Stock.findOneAndUpdate({
+        _id:id
+    }, {$set: { quantity } }, {new: true})
+    .then(stock => {
+        if (!stock) {
+            return res.status(404).send();
+        }
+        res.send(stock);
+    })
+    .catch(err => console.log("Error:",err));
+})
+
 
 // @route DELETE api/stocks
 // @description Delete a Stock 

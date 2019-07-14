@@ -59,8 +59,8 @@ export class StockList extends Component {
                             <tr key={i}>
                                 <td>{stock.symbol}</td>
                                 <td>{stock.quantity}</td>
-                                <td>{stock.purchasePrice}</td>
-                                <td>{stock.currentPrice}</td>
+                                <td>{parseFloat(stock.purchasePrice).toFixed(2)}</td>
+                                <td>{parseFloat(stock.currentPrice).toFixed(2)}</td>
                                 <td>{stock.purchasedOn}</td>
                                 <td>{stock.updatedOn}</td>
                                 <td><button onClick={()=>this.props.sellStock(stock._id)}>Sell Shares</button></td>
