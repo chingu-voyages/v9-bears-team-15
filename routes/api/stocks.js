@@ -26,37 +26,46 @@ router.get('/fetch_stock/:symbol', (req, res) => {
         .catch(err => res.status(400).json({"error":"Invalid call"}));
 })
 
+async function _stockLookup(symbol) {
+    const response = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${stock_key}`);
+    return response.data;
+}
+
 // @route GET api/stocks/update_stocks
 // @description Update All Currently Owned Stocks
 // @access Protected (Public for the moment)
 router.get('/update_stocks',async (req, res) => {
     //FOLLOW Node-todo-api Patch example 
-    // const stocks = await Stock.find();
-    // stocks.map(stock => {
-    //     Stock.findOneAndUpdate({symbol: stock.symbol})
-    //     .then(async foundStock => {
-    //         const newPrice = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${stock_key}`)
-    //                 if (results.data["Global Quote"]) {
-    //                     stock.currentPrice = results.data["Global Quote"]["05. price"];
-    //                 } else {
-    //                     res.status(400).json({"msg":"Exceeded Stock API Quota Call"});
-    //                 }
-    //     })
-    // })
-        // .then(stocks => {
-        //     stocks.map(async stock => {
-        //         console.log(stock.symbol);
-        //         const results = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${stock_key}`)
-        //         if (results.data["Global Quote"]) {
-        //             stock.currentPrice = results.data["Global Quote"]["05. price"];
-        //         } else {
-        //             res.status(400).json({"msg":"Exceeded Stock API Quota Call"});
-        //         }
-        //     });
-        // })
-        // .catch(err => res.status(400).json({'err':err}));
-    res.json({"msg":"stocks updated!"});
-})
+    const stocks = await Stock.find();
+    let updatedStocks;
+    try {
+        updatedStocks = await Promise.all(stocks.map(stock => _stockLookup(stock.symbol)));
+    } catch (err) {
+        res.status(400).json({"error":err});
+    }
+    const updatedPrices = updatedStocks.reduce((acc, data) => {
+        if (data['Global Quote']) {
+            const symbol = data['Global Quote']['01. symbol']
+            return {
+                ...acc,
+                [symbol]:{
+                    price:data['Global Quote']['05. price']
+                }
+            }
+        } else {
+            res.status(400).json({msg:"Symbol Lookup Quota Exceeded"});
+        }
+    }, {});
+    stocks.forEach(async stock => {
+        console.log(stock._id);
+        await Stock.findOneAndUpdate({
+            _id:stock._id
+        },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() }})
+    })
+    res.json({stocks});
+});
+
+    
 
 // @route POST api/stocks
 // @description Add a Stock Purchase
