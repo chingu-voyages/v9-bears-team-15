@@ -8,20 +8,20 @@ const auth = require('../../middleware/auth');
 // Stock Model
 const Stock = require('../../models/Stock');
 
-// @route GET api/stocks
-// @description Get all stocks for a user
-// @access Protected (Public for the moment)
-router.get('/', (req, res) => {
+// @route           GET api/stocks
+// @description     Get all stocks for a user
+// @access          Private
+router.get('/', auth, (req, res) => {
     Stock.find()
         .sort('symbol')
         .then(stocks => res.json(stocks))
         .catch(err => res.status(400).json({"error":"Invalid call"}));
 })
 
-// @route GET api/stocks/fetch_stock?symbol={symbol}
-// @description Get all stocks for a user
-// @access Protected (Public for the moment)
-router.get('/fetch_stock/:symbol', (req, res) => {
+// @route           GET api/stocks/fetch_stock?symbol={symbol}
+// @description     Get all stocks for a user
+// @access          Private
+router.get('/fetch_stock/:symbol', auth, (req, res) => {
     url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${req.params.symbol}&apikey=${stock_key}`
     axios.get(url)
         .then(results => res.json(results.data['Global Quote']))
@@ -75,10 +75,10 @@ function _updateEachStock(stock, updatedPrices) {
 
     
 
-// @route POST api/stocks
-// @description Add a Stock Purchase
-// @access Protected (Public for the moment)
-router.post('/', (req, res) => {
+// @route               POST api/stocks
+// @description         Add a Stock Purchase
+// @access              Private
+router.post('/',auth, (req, res) => {
     const stockInfo = {
         symbol: req.body.symbol,
         purchasePrice: req.body.purchasePrice,
@@ -91,10 +91,10 @@ router.post('/', (req, res) => {
         .catch(err => res.status(400).json({"error":"Invalid data provided"}));
 })
 
-// @route POST api/stocks/:id
-// @description Purchase more shares of a currently owned stock
-// @access Protected (Public for the moment)
-router.patch('/:id', (req, res)=> {
+// @route               POST api/stocks/:id
+// @description         Purchase more shares of a currently owned stock
+// @access              Private
+router.patch('/:id', auth, (req, res)=> {
     const id = req.params.id;
     const { quantity } = req.body;
     if (!ObjectID.isValid(id)) {
@@ -113,10 +113,10 @@ router.patch('/:id', (req, res)=> {
 })
 
 
-// @route DELETE api/stocks
-// @description Delete a Stock 
-// @access Protected (Public for the moment)
-router.delete('/:id', (req, res) => {
+// @route               DELETE api/stocks
+// @description         Delete a Stock 
+// @access              Private
+router.delete('/:id', auth, (req, res) => {
     Stock.findByIdAndDelete(req.params.id)
         .then(stock => res.json(stock))
         .catch(err => res.status(400).json({"error":"Invalid data provided"}));
