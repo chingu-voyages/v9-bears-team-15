@@ -27,6 +27,10 @@ const StockSchema = new Schema({
         type: Number,
         default: 1,
         required: true
+    },
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     }
     
 });

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from '../store';
 
-import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import PrivateRoute from './routing/PrivateRoute';
 
 /* Components */
@@ -25,7 +25,7 @@ class App extends Component {
                         <div className="container">
                             <h1>Bears Stock Game!</h1>
                             <Switch>
-                                <Route exact path='/' component={Dashboard} />
+                                <PrivateRoute exact path='/' component={Dashboard} />
                                 <Route exact path='/login' component={Login} />
                                 <Route exact path='/register' component={Register} /> 
                             </Switch>

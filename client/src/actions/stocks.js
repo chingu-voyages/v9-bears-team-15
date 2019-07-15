@@ -7,9 +7,10 @@ import { FETCH_STOCK,
          SELL_SUCCESSFUL,
          CLEAR_STOCK } from '../actions/types';
 import axios from 'axios';
+import { tokenConfig } from './auth';
 
-export const fetchPrice = symbol => dispatch => {
-    axios.get(`api/stocks/fetch_stock/${symbol}`)
+export const fetchPrice = symbol => (dispatch, getState) => {
+    axios.get(`api/stocks/fetch_stock/${symbol}`, tokenConfig(getState))
     .then(response => {
         if (response.data){
             dispatch({
@@ -32,8 +33,8 @@ export const fetchPrice = symbol => dispatch => {
     .catch(err => console.log(err));
 }
 
-export const fetchStockList = () => dispatch => {
-    axios.get('/api/stocks/')
+export const fetchStockList = () => (dispatch, getState) => {
+    axios.get('/api/stocks/', tokenConfig(getState))
     .then(response => {
         dispatch({
             type: FETCH_STOCKLIST,
@@ -43,8 +44,8 @@ export const fetchStockList = () => dispatch => {
     .catch(err => console.log(err));
 }
 
-export const updateStockPrice = () => dispatch => {
-    axios.get('/api/stocks/update_stocks/')
+export const updateStockPrice = () => (dispatch, getState) => {
+    axios.get('/api/stocks/update_stocks/', tokenConfig(getState))
     .then(response => {
         dispatch({
             type: UPDATE_PRICE,
@@ -54,14 +55,14 @@ export const updateStockPrice = () => dispatch => {
     .catch(err => console.log(err));
 }
 
-export const purchaseStock = ({ symbol, purchasePrice, quantity }) => dispatch => {
+export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch, getState) => {
     const body = {
         symbol,
         purchasePrice,
         quantity
     }
     console.log(body);
-    axios.post('/api/stocks/', body)
+    axios.post('/api/stocks/', body, tokenConfig(getState))
     .then(response => {
         dispatch({
             type:PURCHASE_SUCCESSFUL,
@@ -72,11 +73,11 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => dispatch =
     .catch(err => console.log(err));
 }
 
-export const purchaseExistingStock = (id, quantity) => dispatch => {
+export const purchaseExistingStock = (id, quantity) => (dispatch, getState) => {
     const body = {
         quantity
     }
-    axios.patch(`/api/stocks/${id}/`, body)
+    axios.patch(`/api/stocks/${id}/`, body, tokenConfig(getState))
     .then(response => {
         dispatch({
             type: PURCHASE_EXISTING_SUCCESSFUL,
@@ -89,9 +90,9 @@ export const purchaseExistingStock = (id, quantity) => dispatch => {
 
 }
 
-export const sellStock = (stock_id) => dispatch => {
+export const sellStock = (stock_id) => (dispatch, getState) => {
     console.log(stock_id);
-    axios.delete(`/api/stocks/${stock_id}/`)
+    axios.delete(`/api/stocks/${stock_id}/`, tokenConfig(getState))
     .then(response => {
         if (response.status===200) {
             dispatch({
@@ -102,4 +103,3 @@ export const sellStock = (stock_id) => dispatch => {
     })
     .catch(err => console.log(err));
 }
-

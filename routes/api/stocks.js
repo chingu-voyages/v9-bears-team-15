@@ -12,7 +12,9 @@ const Stock = require('../../models/Stock');
 // @description     Get all stocks for a user
 // @access          Private
 router.get('/', auth, (req, res) => {
-    Stock.find()
+    Stock.find({
+        creator:req.user.id
+    })
         .sort('symbol')
         .then(stocks => res.json(stocks))
         .catch(err => res.status(400).json({"error":"Invalid call"}));
@@ -38,7 +40,9 @@ async function _stockLookup(symbol) {
 // @access          Private
 router.get('/update_stocks',auth, async (req, res) => {
     //FOLLOW Node-todo-api Patch example 
-    const stocks = await Stock.find();
+    const stocks = await Stock.find({
+        creator:req.user.id
+    });
     let updatedStocks;
     try {
         updatedStocks = await Promise.all(stocks.map(stock => _stockLookup(stock.symbol)));
@@ -83,7 +87,8 @@ router.post('/',auth, (req, res) => {
         symbol: req.body.symbol,
         purchasePrice: req.body.purchasePrice,
         currentPrice: req.body.purchasePrice,
-        quantity: req.body.quantity || 1
+        quantity: req.body.quantity || 1,
+        creator: req.user.id
     }
     const newStock = new Stock(stockInfo);
     newStock.save()

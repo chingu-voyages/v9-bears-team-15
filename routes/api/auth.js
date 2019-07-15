@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const auth = require('../../middleware/auth');
 
-//@route    POST api/auth
-//@desc     Authenticate the user
+//@route    POST api/auth/login
+//@desc     Login the User
 //@access   Public
 router.post('/login', (req, res)=> {
     const { email, password } = req.body;
@@ -43,6 +43,14 @@ router.post('/login', (req, res)=> {
             })
         
     })
+});
+
+
+//@route    POST api/auth/logout
+//@desc     Logout User
+//@access   Private
+router.post('/logout', auth, (req, res)=> {
+    
 });
 
 //@route    GET api/auth/user
