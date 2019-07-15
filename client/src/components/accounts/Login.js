@@ -6,7 +6,7 @@ import { login } from '../../actions/auth';
 
 export class Login extends Component {
     state = {
-        username: '',
+        email: '',
         password: ''
     }
 
@@ -17,7 +17,7 @@ export class Login extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        this.props.login(this.state.username, this.state.password)
+        this.props.login(this.state.email, this.state.password);
     }
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -26,18 +26,18 @@ export class Login extends Component {
         if(this.props.isAuthenticated) {
             return <Redirect to='/' />;
         }
-        const { username, password } = this.state;
+        const { email, password } = this.state;
         return (
             <div className="">
                 <h2>Login</h2>
                 <form onSubmit={this.onSubmit}>
                     <div className="">
-                        <label>Userame</label>
-                        <input className="" type="text" name="username" onChange={this.onChange} value={username}/> 
+                        <label>Email</label>
+                        <input className="" type="text" name="email" onChange={this.onChange} value={email}/> 
                     </div>
                     <div className="form-group">
                         <label>Password</label>
-                        <input className="" type="text" name="password" onChange={this.onChange} value={password}/> 
+                        <input className="" type="password" name="password" onChange={this.onChange} value={password}/> 
                     </div>
                     <div className="">
                     <button className="" type="submit">Login</button>
@@ -49,6 +49,6 @@ export class Login extends Component {
     }
 }
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.authReducer.isAuthenticated
 });
 export default connect(mapStateToProps, { login })(Login)

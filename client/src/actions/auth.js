@@ -22,23 +22,23 @@ export const loadUser = () => (dispatch, getState) => {
                 type: AUTH_ERROR
             });
         });
-    };
+};
   
-    // LOGIN USER
-    export const login = (username, password) => dispatch => {
+// LOGIN USER
+export const login = (email, password) => dispatch => {
     // Headers
     const config = {
         headers: {
             "Content-Type": "application/json"
         }
     };
-  
     // Request Body
-    const body = JSON.stringify({ username, password });
-  
+    const body = JSON.stringify({ email, password });
+
     axios
         .post("/api/auth/login", body, config)
         .then(res => {
+
             dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data
@@ -64,7 +64,7 @@ export const loadUser = () => (dispatch, getState) => {
     // Request Body
     const body = JSON.stringify({ username, email, password });
     axios
-        .post("/api/auth/register", body, config)
+        .post("/api/users", body, config)
         .then(res => {
             dispatch({
                 type: REGISTER_SUCCESS,
@@ -80,24 +80,17 @@ export const loadUser = () => (dispatch, getState) => {
     };
   
     // LOGOUT USER
-    export const logout = () => (dispatch, getState) => {
-    axios
-        .post("/api/auth/logout/", null, tokenConfig(getState))
-        .then(res => {
-            dispatch({ type: 'CLEAR_LEADS' });
-            dispatch({
-                type: LOGOUT_SUCCESS
-            });
-        })
-        .catch(err => {
-            //dispatch(returnErrors(err.response.data, err.response.status));
-        });
-    };
+    export const logout = () => (dispatch) => {
+    dispatch({ type: 'CLEAR_LEADS' });
+    dispatch({
+            type: LOGOUT_SUCCESS
+    });
+};
   
-    // Setup config with token - helper function
-    export const tokenConfig = getState => {
+// Setup config with token - helper function
+export const tokenConfig = getState => {
     // Get token from state
-    const token = getState().auth.token;
+    const token = getState().authReducer.token;
   
     // Headers
     const config = {
@@ -108,7 +101,7 @@ export const loadUser = () => (dispatch, getState) => {
   
     // If token, add to headers config
     if (token) {
-        config.headers["Authorization"] = `Token ${token}`;
+        config.headers["x-auth-token"] = `${token}`;
     }
   
     return config;

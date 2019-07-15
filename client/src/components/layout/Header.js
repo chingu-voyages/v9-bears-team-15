@@ -39,7 +39,7 @@ export class Header extends Component {
             <nav className="">
                 <div className="container">
                     <div id="">
-                        <a href="#">Bears Stock Game</a>
+                        <Link to="#">Bears Stock Game</Link>
                     </div>
                     {isAuthenticated ? authLinks : guestLinks}
                 </div>
@@ -49,7 +49,7 @@ export class Header extends Component {
     }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.authReducer
 });
 
 export default connect(mapStateToProps, { logout })(Header);
