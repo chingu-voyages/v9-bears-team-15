@@ -4,6 +4,8 @@ import StockSearch from './StockSearch';
 import StockList from './StockList';
 import PropType from 'prop-types';
 
+
+
 class Dashboard extends Component {
     static propTypes = {
         cashOnHand: PropType.number.isRequired
