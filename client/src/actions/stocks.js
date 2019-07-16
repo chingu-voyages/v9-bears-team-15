@@ -67,18 +67,13 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch,
     .then(response => {
         dispatch({
             type:PURCHASE_SUCCESSFUL,
-            payload: response.data
+            payload: response.data.stock
         });
         dispatch({type: CLEAR_STOCK});
-        const { quantity, purchasePrice } = response.data;
-        const stockSale =  quantity * purchasePrice;
-        axios.post('/api/users/updateCash',{ stockSale }, tokenConfig(getState))
-        .then(response => {
-            dispatch({
-                type: CASHONHAND_UPDATED,
-                payload: response.data
-            })
-        })
+        dispatch({
+            type: CASHONHAND_UPDATED,
+            payload: response.data.user
+        });
     })
     .catch(err => console.log(err));
     

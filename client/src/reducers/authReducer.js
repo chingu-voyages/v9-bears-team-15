@@ -46,7 +46,7 @@ export default function(state = initialState, action) {
         case CASHONHAND_UPDATED:
             return {
                 ...state,
-                user: action.payload.user
+                user: action.payload
             }
         default:
             return state;

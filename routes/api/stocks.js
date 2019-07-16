@@ -82,7 +82,8 @@ function _updateEachStock(stock, updatedPrices) {
 // @route               POST api/stocks
 // @description         Add a Stock Purchase
 // @access              Private
-router.post('/',auth, (req, res) => {
+router.post('/',auth, async (req, res) => {
+    const { quantity, purchasePrice } = req.body;
     const stockInfo = {
         symbol: req.body.symbol,
         purchasePrice: req.body.purchasePrice,
@@ -90,10 +91,21 @@ router.post('/',auth, (req, res) => {
         quantity: req.body.quantity || 1,
         creator: req.user.id
     }
-    const newStock = new Stock(stockInfo);
-    newStock.save()
-        .then(stock => res.json(stock))
-        .catch(err => res.status(400).json({"error":"Invalid data provided"}));
+    try {
+        const user = await User.findOne({_id: req.user.id});
+        if ((quantity * purchasePrice) > user.cashOnHand) {
+            res.status(400).send({msg:'insufficient funds'});
+        }
+        user.cashOnHand = user.cashOnHand - (quantity * purchasePrice);
+        const newStock = await new Stock(stockInfo);
+        await user.save()
+        await newStock.save()
+        return res.json({user, stock:newStock});
+      
+    } catch(err) {
+        console.log(err);
+        return res.status(400).json({msg:err});
+    }
 })
 
 // @route               POST api/stocks/:id
