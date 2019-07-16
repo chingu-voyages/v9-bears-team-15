@@ -13,7 +13,8 @@ export class StockList extends Component {
         stocks: PropType.array.isRequired,
         fetchStockList: PropType.func.isRequired,
         sellStock: PropType.func.isRequired,
-        updateStockPrice: PropType.func.isRequired
+        updateStockPrice: PropType.func.isRequired,
+        cashOnHand: PropType.number.isRequired
     }
 
     componentDidMount(){
@@ -75,7 +76,8 @@ export class StockList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    stocks : state.stockListReducer.stocks
+    stocks : state.stockListReducer.stocks,
+    cashOnHand : state.authReducer.user.cashOnHand
 })
 
 export default connect(mapStateToProps, { fetchStockList, sellStock, updateStockPrice })(StockList);

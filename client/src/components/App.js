@@ -23,7 +23,6 @@ class App extends Component {
                     <Fragment>
                         <Header />
                         <div className="container">
-                            <h1>Bears Stock Game!</h1>
                             <Switch>
                                 <PrivateRoute exact path='/' component={Dashboard} />
                                 <Route exact path='/login' component={Login} />

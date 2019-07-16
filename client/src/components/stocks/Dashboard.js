@@ -1,13 +1,27 @@
-import React, { Fragment } from 'react';
-
+import React, { Fragment, Component } from 'react';
+import { connect } from 'react-redux';
 import StockSearch from './StockSearch';
-import StockList from './StockList'
+import StockList from './StockList';
+import PropType from 'prop-types';
 
-export default function Dashboard() {
-    return (
-        <Fragment>
-            <StockSearch />
-            <StockList />
-        </Fragment>
-    )
+class Dashboard extends Component {
+    static propTypes = {
+        cashOnHand: PropType.number.isRequired
+    }
+    render() {
+        return (
+            <Fragment>
+                <h1>Bears Stock Game!</h1>
+                <p>Cash On Hand: ${this.props.cashOnHand}</p>
+                <StockSearch />
+                <StockList />
+            </Fragment>
+        )
+    }
 }
+
+const mapStateToProps = (state) => ({
+    cashOnHand : state.authReducer.user.cashOnHand
+});
+
+export default connect(mapStateToProps)(Dashboard);

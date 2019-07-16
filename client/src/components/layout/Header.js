@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { logout } from "../../actions/auth";
+import { loadUser, logout } from "../../actions/auth";
 
 export class Header extends Component {
     static propTypes = {
         auth: PropTypes.object.isRequired,
-        logout: PropTypes.func.isRequired
+        logout: PropTypes.func.isRequired,
+        loadUser: PropTypes.func.isRequired
     };
+
+    componentDidMount() {
+        this.props.loadUser();
+    }
 
     render() {
         const { isAuthenticated, user } = this.props.auth;
@@ -52,4 +57,4 @@ const mapStateToProps = state => ({
     auth: state.authReducer
 });
 
-export default connect(mapStateToProps, { logout })(Header);
+export default connect(mapStateToProps, { loadUser, logout })(Header);
