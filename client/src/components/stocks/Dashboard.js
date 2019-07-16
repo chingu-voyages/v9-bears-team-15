@@ -12,7 +12,7 @@ class Dashboard extends Component {
         return (
             <Fragment>
                 <h1>Bears Stock Game!</h1>
-                <p>Cash On Hand: ${this.props.cashOnHand}</p>
+                <p>Cash On Hand: ${parseFloat(this.props.cashOnHand).toFixed(2)}</p>
                 <StockSearch />
                 <StockList />
             </Fragment>

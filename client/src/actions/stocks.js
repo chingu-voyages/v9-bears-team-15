@@ -5,9 +5,11 @@ import { FETCH_STOCK,
          PURCHASE_SUCCESSFUL,
          PURCHASE_EXISTING_SUCCESSFUL,
          SELL_SUCCESSFUL,
+         CASHONHAND_UPDATED,
          CLEAR_STOCK } from '../actions/types';
 import axios from 'axios';
 import { tokenConfig } from './auth';
+import { loadUser } from './auth';
 
 export const fetchPrice = symbol => (dispatch, getState) => {
     axios.get(`api/stocks/fetch_stock/${symbol}`, tokenConfig(getState))
@@ -61,7 +63,6 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch,
         purchasePrice,
         quantity
     }
-    console.log(body);
     axios.post('/api/stocks/', body, tokenConfig(getState))
     .then(response => {
         dispatch({
@@ -69,8 +70,18 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch,
             payload: response.data
         });
         dispatch({type: CLEAR_STOCK});
+        const { quantity, purchasePrice } = response.data;
+        const stockSale =  quantity * purchasePrice;
+        axios.post('/api/users/updateCash',{ stockSale }, tokenConfig(getState))
+        .then(response => {
+            dispatch({
+                type: CASHONHAND_UPDATED,
+                payload: response.data
+            })
+        })
     })
     .catch(err => console.log(err));
+    
 }
 
 export const purchaseExistingStock = (id, quantity) => (dispatch, getState) => {

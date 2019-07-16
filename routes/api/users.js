@@ -1,9 +1,11 @@
 const User = require('../../models/User');
+const Stock = require('../../models/Stock');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const auth = require('../../middleware/auth');
 
 //@route    POST api/users
 //@desc     Register a new user
@@ -50,5 +52,20 @@ router.post('/', (req, res)=> {
         })
     })
 });
+
+router.post('/updateCash', auth, (req, res)=> {
+    const { stockSale } = req.body;
+    if (!stockSale) return res.status(400).json({msg:"Missing stockSale value"});
+    User.findOne({_id:req.user.id})
+        .then(user => {
+            user.cashOnHand = user.cashOnHand - stockSale;
+            user.save()
+                .then(user => res.json({ user }))
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(400).json({msg:err});
+        })
+})
 
 module.exports = router;
