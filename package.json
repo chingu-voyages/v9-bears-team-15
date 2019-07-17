@@ -27,6 +27,8 @@
     "config": "^3.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.14",
+    "lodash.template": "^4.5.0",
     "mongoose": "^5.6.4"
   },
   "devDependencies": {
