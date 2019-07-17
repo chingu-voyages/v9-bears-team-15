@@ -79,17 +79,23 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch,
     
 }
 
-export const purchaseExistingStock = (id, quantity) => (dispatch, getState) => {
+export const purchaseExistingStock = (id, quantity, totalQuantity, currentPrice) => (dispatch, getState) => {
     const body = {
-        quantity
+        quantity,
+        totalQuantity,
+        currentPrice
     }
     axios.patch(`/api/stocks/${id}/`, body, tokenConfig(getState))
     .then(response => {
         dispatch({
             type: PURCHASE_EXISTING_SUCCESSFUL,
-            payload: response.data
+            payload: response.data.stock
         })
         dispatch({type: CLEAR_STOCK});
+        dispatch({
+            type: CASHONHAND_UPDATED,
+            payload: response.data.user
+        });
     })
     .catch(err => console.log(err));
 
@@ -105,6 +111,10 @@ export const sellStock = (stock_id) => (dispatch, getState) => {
                 type: SELL_SUCCESSFUL,
                 payload:stock_id
             })
+            dispatch({
+                type: CASHONHAND_UPDATED,
+                payload: response.data.user
+            });
         }
     })
     .catch(err => console.log(err));

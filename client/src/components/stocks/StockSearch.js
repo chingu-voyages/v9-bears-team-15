@@ -13,7 +13,7 @@ export class StockSearch extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.lastSalePrice && prevProps.lastSalePrice !== this.props.lastSalePrice) {
-            const maxRange = parseInt(this.props.cashOnHand / parseInt(this.props.lastSalePrice));
+            const maxRange = parseInt(this.props.cashOnHand / parseFloat(this.props.lastSalePrice).toFixed(2));
             this.setState({ maxRange });
         }
     }
@@ -47,7 +47,7 @@ export class StockSearch extends Component {
             })
         } else {
             const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
-            this.props.purchaseExistingStock(stock._id, newAmount);
+            this.props.purchaseExistingStock(stock._id, this.state.amount, newAmount, this.props.lastSalePrice);
         }
     }
     
