@@ -5,9 +5,11 @@ import { FETCH_STOCK,
          PURCHASE_SUCCESSFUL,
          PURCHASE_EXISTING_SUCCESSFUL,
          SELL_SUCCESSFUL,
+         CASHONHAND_UPDATED,
          CLEAR_STOCK } from '../actions/types';
 import axios from 'axios';
 import { tokenConfig } from './auth';
+import { loadUser } from './auth';
 
 export const fetchPrice = symbol => (dispatch, getState) => {
     axios.get(`api/stocks/fetch_stock/${symbol}`, tokenConfig(getState))
@@ -61,29 +63,39 @@ export const purchaseStock = ({ symbol, purchasePrice, quantity }) => (dispatch,
         purchasePrice,
         quantity
     }
-    console.log(body);
     axios.post('/api/stocks/', body, tokenConfig(getState))
     .then(response => {
         dispatch({
             type:PURCHASE_SUCCESSFUL,
-            payload: response.data
+            payload: response.data.stock
         });
         dispatch({type: CLEAR_STOCK});
+        dispatch({
+            type: CASHONHAND_UPDATED,
+            payload: response.data.user
+        });
     })
     .catch(err => console.log(err));
+    
 }
 
-export const purchaseExistingStock = (id, quantity) => (dispatch, getState) => {
+export const purchaseExistingStock = (id, quantity, totalQuantity, currentPrice) => (dispatch, getState) => {
     const body = {
-        quantity
+        quantity,
+        totalQuantity,
+        currentPrice
     }
     axios.patch(`/api/stocks/${id}/`, body, tokenConfig(getState))
     .then(response => {
         dispatch({
             type: PURCHASE_EXISTING_SUCCESSFUL,
-            payload: response.data
+            payload: response.data.stock
         })
         dispatch({type: CLEAR_STOCK});
+        dispatch({
+            type: CASHONHAND_UPDATED,
+            payload: response.data.user
+        });
     })
     .catch(err => console.log(err));
 
@@ -99,6 +111,10 @@ export const sellStock = (stock_id) => (dispatch, getState) => {
                 type: SELL_SUCCESSFUL,
                 payload:stock_id
             })
+            dispatch({
+                type: CASHONHAND_UPDATED,
+                payload: response.data.user
+            });
         }
     })
     .catch(err => console.log(err));

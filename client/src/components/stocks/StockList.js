@@ -13,7 +13,8 @@ export class StockList extends Component {
         stocks: PropType.array.isRequired,
         fetchStockList: PropType.func.isRequired,
         sellStock: PropType.func.isRequired,
-        updateStockPrice: PropType.func.isRequired
+        updateStockPrice: PropType.func.isRequired,
+        cashOnHand: PropType.number.isRequired
     }
 
     componentDidMount(){
@@ -37,6 +38,8 @@ export class StockList extends Component {
         }, this.props.updateStockPrice)
     }
 
+    calculatePctChange = (purchasePrice, currentPrice) => parseFloat(((currentPrice - purchasePrice) / purchasePrice)* 100).toFixed(1);
+
     render() {
         return (
             <div>
@@ -51,6 +54,7 @@ export class StockList extends Component {
                             <th>Current Price</th>
                             <th>Purchased On</th>
                             <th>Last Updated</th>
+                            <th>Change in Value</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -63,6 +67,7 @@ export class StockList extends Component {
                                 <td>{parseFloat(stock.currentPrice).toFixed(2)}</td>
                                 <td>{stock.purchasedOn}</td>
                                 <td>{stock.updatedOn}</td>
+                                <td>{this.calculatePctChange(stock.purchasePrice, stock.currentPrice)+"%"}</td>
                                 <td><button onClick={()=>this.props.sellStock(stock._id)}>Sell Shares</button></td>
                             </tr>
                     ))}
@@ -75,7 +80,8 @@ export class StockList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    stocks : state.stockListReducer.stocks
+    stocks : state.stockListReducer.stocks,
+    cashOnHand : state.authReducer.user.cashOnHand
 })
 
 export default connect(mapStateToProps, { fetchStockList, sellStock, updateStockPrice })(StockList);

@@ -7,6 +7,7 @@ const auth = require('../../middleware/auth');
 
 // Stock Model
 const Stock = require('../../models/Stock');
+const User = require('../../models/User');
 
 // @route           GET api/stocks
 // @description     Get all stocks for a user
@@ -82,7 +83,8 @@ function _updateEachStock(stock, updatedPrices) {
 // @route               POST api/stocks
 // @description         Add a Stock Purchase
 // @access              Private
-router.post('/',auth, (req, res) => {
+router.post('/',auth, async (req, res) => {
+    const { quantity, purchasePrice } = req.body;
     const stockInfo = {
         symbol: req.body.symbol,
         purchasePrice: req.body.purchasePrice,
@@ -90,42 +92,70 @@ router.post('/',auth, (req, res) => {
         quantity: req.body.quantity || 1,
         creator: req.user.id
     }
-    const newStock = new Stock(stockInfo);
-    newStock.save()
-        .then(stock => res.json(stock))
-        .catch(err => res.status(400).json({"error":"Invalid data provided"}));
+    try {
+        const user = await User.findOne({_id: req.user.id});
+        if ((quantity * parseFloat(purchasePrice).toFixed(2)) > user.cashOnHand) {
+            return res.status(400).send({msg:'insufficient funds'});
+        }
+        user.cashOnHand = user.cashOnHand - (quantity * parseFloat(purchasePrice).toFixed(2));
+        const newStock = await new Stock(stockInfo);
+        await user.save()
+        await newStock.save()
+        return res.json({user, stock:newStock});
+      
+    } catch(err) {
+        console.log(err);
+        return res.status(400).json({msg:err});
+    }
 })
 
 // @route               POST api/stocks/:id
 // @description         Purchase more shares of a currently owned stock
 // @access              Private
-router.patch('/:id', auth, (req, res)=> {
+router.patch('/:id', auth, async (req, res)=> {
     const id = req.params.id;
-    const { quantity } = req.body;
+    const { quantity, totalQuantity, currentPrice } = req.body;
     if (!ObjectID.isValid(id)) {
         res.status(404).send();
     }
-    Stock.findOneAndUpdate({
-        _id:id
-    }, {$set: { quantity } }, {new: true})
-    .then(stock => {
+    try {
+        const stock = await Stock.findOneAndUpdate({_id:id}, {$set: { quantity: totalQuantity, currentPrice } }, {new: true});
         if (!stock) {
             return res.status(404).send();
         }
-        res.send(stock);
-    })
-    .catch(err => console.log("Error:",err));
+        const user = await User.findOne({_id: req.user.id});
+        if ((quantity * parseFloat(currentPrice).toFixed(2)) > user.cashOnHand) {
+            return res.status(400).send({msg:'insufficient funds'});
+        }
+        user.cashOnHand = user.cashOnHand - (quantity * parseFloat(currentPrice).toFixed(2));
+        await user.save();
+        res.send({stock, user});
+
+    } catch(err) {
+        res.status(400).json({"error":"Invalid data provided"});
+    }
 })
 
 
 // @route               DELETE api/stocks
 // @description         Delete a Stock 
 // @access              Private
-router.delete('/:id', auth, (req, res) => {
-    Stock.findByIdAndDelete(req.params.id)
-        .then(stock => res.json(stock))
-        .catch(err => res.status(400).json({"error":"Invalid data provided"}));
-})
+router.delete('/:id', auth, async (req, res) => {
+    const id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+    }
+    try {
+        const user = await User.findOne({_id:req.user.id});
+        const stock = await Stock.findByIdAndDelete(id);
+        console.log(user.cashOnHand, stock.quantity, stock.currentPrice);
+        user.cashOnHand = parseFloat(user.cashOnHand + (stock.quantity *stock.currentPrice)).toFixed(2);
+        await user.save();
+        return res.json({ user })
+    } catch(err) {
+        res.status(400).json({"error":"Invalid data provided"});
+    }       
+});
 
 
 module.exports = router;

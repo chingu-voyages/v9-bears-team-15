@@ -11,11 +11,19 @@ export class StockSearch extends Component {
         amount: 1
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.lastSalePrice && prevProps.lastSalePrice !== this.props.lastSalePrice) {
+            const maxRange = parseInt(this.props.cashOnHand / parseFloat(this.props.lastSalePrice).toFixed(2));
+            this.setState({ maxRange });
+        }
+    }
+
     static propTypes = {
         fetchPrice: PropType.func.isRequired,
         purchaseStock: PropType.func.isRequired,
         purchaseExistingStock: PropType.func.isRequired,
-        stocks: PropType.array
+        stocks: PropType.array,
+        cashOnHand: PropType.number.isRequired
     }
 
     onChange = (e) => this.setState({ [e.target.name]:e.target.value });
@@ -39,7 +47,7 @@ export class StockSearch extends Component {
             })
         } else {
             const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
-            this.props.purchaseExistingStock(stock._id, newAmount);
+            this.props.purchaseExistingStock(stock._id, this.state.amount, newAmount, this.props.lastSalePrice);
         }
     }
     
@@ -78,7 +86,8 @@ export class StockSearch extends Component {
 const mapStateToProps = state => ({
     symbol: state.stocksReducer.symbol,
     lastSalePrice: state.stocksReducer.lastSalePrice,
-    stocks : state.stockListReducer.stocks
+    stocks : state.stockListReducer.stocks,
+    cashOnHand: state.authReducer.user.cashOnHand
 });
 
 export default connect(mapStateToProps, { fetchPrice, purchaseStock, purchaseExistingStock })(StockSearch);
