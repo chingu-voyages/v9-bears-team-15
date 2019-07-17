@@ -1,44 +1,35 @@
 {
-  "name": "v9-bears-team-15",
+  "name": "stockgame",
   "version": "1.0.0",
-  "description": "Add-project-description-here | Voyage-9 | https://chingu.io/",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "description": "basic setup for stock game backend",
+  "main": "server.js",
   "scripts": {
-    "dev": "webpack --mode development --watch ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js",
-    "build": "webpack --mode production ./backend/frontend/src/index.js --output ./backend/frontend/static/frontend/main.js"
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chingu-voyages/v9-bears-team-15.git"
+    "url": "git+https://github.com/clockwerkz/stockgame.git"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chingu-voyages/v9-bears-team-15/issues"
+    "url": "https://github.com/clockwerkz/stockgame/issues"
   },
-  "proxy":"http://localhost:8000",
-  "homepage": "https://github.com/chingu-voyages/v9-bears-team-15#readme",
+  "homepage": "https://github.com/clockwerkz/stockgame#readme",
   "dependencies": {
     "axios": "^0.19.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^4.1.1",
+    "config": "^3.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.6.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "redux-devtools-extension": "^2.13.8",
-    "webpack": "^4.35.0",
-    "webpack-cli": "^3.3.5"
+    "nodemon": "^1.19.1"
   }
 }
