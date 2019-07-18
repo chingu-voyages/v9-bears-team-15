@@ -14,12 +14,13 @@ import { loadUser } from './auth';
 export const fetchPrice = symbol => (dispatch, getState) => {
     axios.get(`api/stocks/fetch_stock/${symbol}`, tokenConfig(getState))
     .then(response => {
-        if (response.data){
+        if (response){
+            console.log(response);
             dispatch({
                 type: FETCH_STOCK,
                 payload: {
-                    symbol: response.data['01. symbol'],
-                    lastSalePrice: Number.parseFloat(response.data['05. price']).toFixed(2)
+                    symbol: response.data.symbol,
+                    lastSalePrice: Number.parseFloat(response.data.price).toFixed(2)
                 }
             });
         } else {
