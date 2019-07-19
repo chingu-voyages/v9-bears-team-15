@@ -80,7 +80,7 @@ router.get('/update_stocks',auth, async (req, res) => {
 function _updateEachStock(stock, updatedPrices) {
     return Stock.findOneAndUpdate({
         _id:stock._id
-    },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() } }, { new:true })
+    },{$set:{ currentPrice : parseInt(updatedPrices[stock.symbol].price*100), updatedOn:Date.now() } }, { new:true })
 }
 
     

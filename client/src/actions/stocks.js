@@ -20,7 +20,7 @@ export const fetchPrice = symbol => (dispatch, getState) => {
                 type: FETCH_STOCK,
                 payload: {
                     symbol: response.data.symbol,
-                    lastSalePrice: Number.parseFloat(response.data.price).toFixed(2)
+                    lastSalePrice: parseInt(response.data.price*100)
                 }
             });
         } else {

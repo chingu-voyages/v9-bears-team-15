@@ -17,8 +17,8 @@ class Dashboard extends Component {
         return (
             <Fragment>
                 <h1>Bears Stock Game!</h1>
-                <p>Cash On Hand: ${cashOnHand.toFixed(2)}</p>
-                <p>Portfolio Worth: ${(portfolioWorth + cashOnHand).toFixed(2)}</p>
+                <p>Cash On Hand: ${(cashOnHand/100).toFixed(2)}</p>
+                <p>Portfolio Worth: ${((portfolioWorth + cashOnHand)/100).toFixed(2)}</p>
                 <StockSearch />
                 <StockList />
             </Fragment>
