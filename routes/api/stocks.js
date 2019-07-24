@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const stock_key = require('../../config/keys').stock_key;
+//const stock_key = require('../../config/keys').stock_key;
 const { ObjectID } = require('mongodb');
 const auth = require('../../middleware/auth');
 
