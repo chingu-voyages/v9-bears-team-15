@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const stock_key = require('../../config/keys').stock_key;
+//const stock_key = require('../../config/keys').stock_key;
 const { ObjectID } = require('mongodb');
 const auth = require('../../middleware/auth');
 
@@ -24,18 +24,23 @@ router.get('/', auth, (req, res) => {
 // @route           GET api/stocks/fetch_stock?symbol={symbol}
 // @description     Get all stocks for a user
 // @access          Private
-router.get('/fetch_stock/:symbol', auth, (req, res) => {
-    url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${req.params.symbol}&apikey=${stock_key}`
-    axios.get(url)
-        .then(results => res.json(results.data['Global Quote']))
-        .catch(err => res.status(400).json({"error":"Invalid call"}));
-})
 
 async function _stockLookup(symbol) {
-    const response = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${stock_key}`);
+    const response = await axios.get(`https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}`);
     return response.data;
 }
 
+// TODO - Refactor to use _stockLookup Function
+router.get('/fetch_stock/:symbol', auth, async (req, res) => {
+    url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${req.params.symbol}`
+    axios.get(url)
+        .then(results => res.json(results.data))
+        .catch(err => res.status(400).json({"error":"Invalid call"}));
+})
+
+
+
+//TODO - Refactor this so it's all one call
 // @route           GET api/stocks/update_stocks
 // @description     Update All Currently Owned Stocks
 // @access          Private
@@ -51,12 +56,12 @@ router.get('/update_stocks',auth, async (req, res) => {
         res.status(400).json({"error":err});
     }
     const updatedPrices = updatedStocks.reduce((acc, data) => {
-        if (data['Global Quote']) {
-            const symbol = data['Global Quote']['01. symbol']
+        if (data) {
+            const symbol = data.symbol
             return {
                 ...acc,
                 [symbol]:{
-                    price:data['Global Quote']['05. price']
+                    price:data.price
                 }
             }
         } else {
@@ -75,7 +80,7 @@ router.get('/update_stocks',auth, async (req, res) => {
 function _updateEachStock(stock, updatedPrices) {
     return Stock.findOneAndUpdate({
         _id:stock._id
-    },{$set:{ currentPrice : updatedPrices[stock.symbol].price, updatedOn:Date.now() } }, { new:true })
+    },{$set:{ currentPrice : parseInt(updatedPrices[stock.symbol].price*100), updatedOn:Date.now() } }, { new:true })
 }
 
     

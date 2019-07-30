@@ -49,7 +49,10 @@ export class StockSearch extends Component {
             const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
             this.props.purchaseExistingStock(stock._id, this.state.amount, newAmount, this.props.lastSalePrice);
         }
+        this.setState({name:''});
     }
+
+    formatPrice = price => (price/100).toFixed(2);
     
     render() {
         const { symbol, lastSalePrice } = this.props;
@@ -63,7 +66,7 @@ export class StockSearch extends Component {
                 </form>
                 { symbol && lastSalePrice ? (
                     <Fragment>
-                        <p>{`Stock: ${symbol} Price: ${lastSalePrice}`}</p>
+                        <p>{`Stock: ${symbol} Price: `+this.formatPrice(lastSalePrice)}</p>
                         <label htmlFor='amount'>Quanity of Shares:{this.state.amount}</label>
                         <input 
                             type='range' 

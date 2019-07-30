@@ -1,0 +1,18 @@
+@import '../../sass/variables';
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    &__wrapper {
+        background-color: $primary-color;
+    }
+    &__logo {
+        text-decoration: none;
+        color: #fff;
+    }
+}
+
+.user-nav {
+    list-style: none;
+    display: flex;
+}

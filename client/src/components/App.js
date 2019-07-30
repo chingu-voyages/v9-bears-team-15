@@ -14,6 +14,7 @@ import Dashboard from './stocks/Dashboard';
 import Login from './accounts/Login';
 import Register from './accounts/Register';
 import Header from './layout/Header';
+import './app.scss';
 
 class App extends Component {
     render() {
