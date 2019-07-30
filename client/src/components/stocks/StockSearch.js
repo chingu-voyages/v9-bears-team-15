@@ -58,7 +58,7 @@ export class StockSearch extends Component {
         const { symbol, lastSalePrice } = this.props;
         const { name } = this.state;
         return (
-            <Fragment>
+            <div className="stock-search">
                 <form onSubmit={this.searchStock}>
                     <label htmlFor="name">Enter Stock Symbol:</label>
                     <input type="text" name="name" onChange={this.onChange} value={name} />
@@ -81,7 +81,7 @@ export class StockSearch extends Component {
                     </Fragment>):
                     (<p>No Stock Selected</p>)}
               
-            </Fragment>
+            </div>
         )
     }
 }
