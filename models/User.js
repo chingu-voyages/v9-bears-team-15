@@ -18,7 +18,7 @@ const UserSchema = new Schema({
     },
     cashOnHand: {
         type: Number,
-        default: 10000.00
+        default: 1000000
     }
 });
 
