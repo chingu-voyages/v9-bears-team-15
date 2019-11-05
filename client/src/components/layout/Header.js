@@ -3,12 +3,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { loadUser, logout } from "../../actions/auth";
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import './header.scss'
+
 
 export class Header extends Component {
     static propTypes = {
@@ -23,13 +19,13 @@ export class Header extends Component {
 
     render() {
         const { isAuthenticated, user } = this.props.auth;
-
+        
         const authLinks = (
-            <ul className="">
-                <span className="">
+            <ul className="user-nav">
+                <span className="user-nav__link">
                     <strong>{user ? `Welcome ${user.username}` : ""}</strong>
                 </span>
-                <li className="">
+                <li className="user-nav__link">
                     <button onClick={this.props.logout} className="">Logout</button>
                 </li>
             </ul>
@@ -47,12 +43,16 @@ export class Header extends Component {
         );
 
         return (
-                <AppBar position="static">
-                    <Typography variant="h6">
-                        <Link to="#">Bears Stock Game</Link>
-                    </Typography>
-                    {isAuthenticated ? authLinks : guestLinks}
-                </AppBar>
+                <div className="navbar__wrapper">
+                    <div className="container">
+                        <div className="navbar">
+                            <h1>
+                                <Link to="#" className="navbar__logo">Bears Stock Game</Link>
+                            </h1>
+                            {isAuthenticated ? authLinks : guestLinks}
+                        </div>
+                    </div>
+                </div>
             );
         }
     }

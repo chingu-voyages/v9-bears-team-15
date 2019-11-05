@@ -49,13 +49,16 @@ export class StockSearch extends Component {
             const newAmount = parseInt(stock.quantity)+parseInt(this.state.amount);
             this.props.purchaseExistingStock(stock._id, this.state.amount, newAmount, this.props.lastSalePrice);
         }
+        this.setState({name:''});
     }
+
+    formatPrice = price => (price/100).toFixed(2);
     
     render() {
         const { symbol, lastSalePrice } = this.props;
         const { name } = this.state;
         return (
-            <Fragment>
+            <div className="stock-search">
                 <form onSubmit={this.searchStock}>
                     <label htmlFor="name">Enter Stock Symbol:</label>
                     <input type="text" name="name" onChange={this.onChange} value={name} />
@@ -63,7 +66,7 @@ export class StockSearch extends Component {
                 </form>
                 { symbol && lastSalePrice ? (
                     <Fragment>
-                        <p>{`Stock: ${symbol} Price: ${lastSalePrice}`}</p>
+                        <p>{`Stock: ${symbol} Price: `+this.formatPrice(lastSalePrice)}</p>
                         <label htmlFor='amount'>Quanity of Shares:{this.state.amount}</label>
                         <input 
                             type='range' 
@@ -78,7 +81,7 @@ export class StockSearch extends Component {
                     </Fragment>):
                     (<p>No Stock Selected</p>)}
               
-            </Fragment>
+            </div>
         )
     }
 }
