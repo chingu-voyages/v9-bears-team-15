@@ -60,7 +60,7 @@ router.get('/update_stocks',auth, async (req, res) => {
             const symbol = data.symbol
             return {
                 ...acc,
-                [symbol]:{
+                [symbol.toLowerCase()]:{
                     price:data.price
                 }
             }
@@ -69,18 +69,19 @@ router.get('/update_stocks',auth, async (req, res) => {
         }
     }, {});
     try {
-        const arr = await Promise.all(stocks.map(async stock => await _updateEachStock(stock, updatedPrices)));
+        const arr = await Promise.all(stocks.map(async stock => await _updateEachStock(stock, updatedPrices[stock.symbol].price)));
         res.json(arr);
     } catch (err) {
+        console.log(err);
         res.status(400).json({"error":err});
     } 
 });
  
 
-function _updateEachStock(stock, updatedPrices) {
+function _updateEachStock(stock, price) {
     return Stock.findOneAndUpdate({
         _id:stock._id
-    },{$set:{ currentPrice : parseInt(updatedPrices[stock.symbol].price*100), updatedOn:Date.now() } }, { new:true })
+    },{$set:{ currentPrice : parseInt(price*100), updatedOn:Date.now() } }, { new:true })
 }
 
     
