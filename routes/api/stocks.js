@@ -55,12 +55,12 @@ router.get('/update_stocks',auth, async (req, res) => {
     } catch (err) {
         res.status(400).json({"error":err});
     }
-    const updatedPrices = updatedStocks.reduce((acc, data) => {
+    const updatedPrices = await updatedStocks.reduce((acc, data) => {
         if (data) {
-            const symbol = data.symbol
+            const symbol = data.symbol;
             return {
                 ...acc,
-                [symbol.toLowerCase()]:{
+                [symbol]:{
                     price:data.price
                 }
             }
