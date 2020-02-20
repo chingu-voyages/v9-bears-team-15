@@ -2,6 +2,7 @@ import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import StockSearch from './StockSearch';
 import StockList from './StockList';
+import Portfolio from './Portfolio';
 import PropType from 'prop-types';
 import './dashboard.scss';
 
@@ -16,10 +17,9 @@ class Dashboard extends Component {
         let portfolioWorth = parseFloat(this.props.stocks.reduce((acc, stock) => acc += parseFloat(parseFloat(stock.currentPrice).toFixed(2)) * stock.quantity, 0));
         return (
             <div className="dashboard">
-                <h1>Bears Stock Game!</h1>
-                <p>Cash On Hand: ${(cashOnHand/100).toFixed(2)}</p>
-                <p>Portfolio Worth: ${((portfolioWorth + cashOnHand)/100).toFixed(2)}</p>
+                <h1>Fun With Stocks!</h1>
                 <div className="panel-container">
+                    <Portfolio />
                     <StockSearch />
                     <StockList />
                 </div>
