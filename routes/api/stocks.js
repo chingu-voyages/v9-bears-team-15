@@ -25,16 +25,27 @@ router.get('/', auth, (req, res) => {
 // @description     Get all stocks for a user
 // @access          Private
 
-async function _stockLookup(symbol) {
-    const response = await axios.get(`https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbol}`);
-    return response.data;
+async function _stockLookup(symbols) {
+    try {
+        const response = await axios.get(`https://financialmodelingprep.com/api/v3/stock/real-time-price/${symbols}`);
+        if (response.data && response.data.companiesPriceList) {
+            return response.data.companiesPriceList;
+        } else {
+            throw error;
+        }
+    } catch(err) {
+        return [];
+    }
 }
 
 // TODO - Refactor to use _stockLookup Function
 router.get('/fetch_stock/:symbol', auth, async (req, res) => {
     url = `https://financialmodelingprep.com/api/v3/stock/real-time-price/${req.params.symbol}`
     axios.get(url)
-        .then(results => res.json(results.data))
+        .then(results => {
+            console.log(results.data);
+            return res.json(results.data)
+        })
         .catch(err => res.status(400).json({"error":"Invalid call"}));
 })
 
@@ -49,12 +60,15 @@ router.get('/update_stocks',auth, async (req, res) => {
     const stocks = await Stock.find({
         creator:req.user.id
     });
-    let updatedStocks;
+    if (stocks.length === 0) res.send({msg:"No Stocks"});
+    let stocklist = stocks.map(stock => stock.symbol).join(',');
+    let updatedStocks=[];
     try {
-        updatedStocks = await Promise.all(stocks.map(stock => _stockLookup(stock.symbol)));
+        updatedStocks = await  _stockLookup(stocklist);
     } catch (err) {
         res.status(400).json({"error":err});
     }
+    console.log(updatedStocks);
     const updatedPrices = await updatedStocks.reduce((acc, data) => {
         if (data) {
             const symbol = data.symbol;
