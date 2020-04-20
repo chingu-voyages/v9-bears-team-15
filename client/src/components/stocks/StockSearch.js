@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { fetchPrice, purchaseStock, purchaseExistingStock } from '../../actions/stocks';
 import PropType from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export class StockSearch extends Component {
     state = {
@@ -80,7 +81,7 @@ export class StockSearch extends Component {
                         <button onClick={this.purchaseShares}>Purchase</button>
                     </Fragment>):
                     (<p>No Stock Selected</p>)}
-              
+                <Link to="/">Return to Dashboard</Link>
             </div>
         )
     }

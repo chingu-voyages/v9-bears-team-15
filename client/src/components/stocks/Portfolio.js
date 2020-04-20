@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropType from 'prop-types';
 import './portfolio.scss';
+import { Link } from 'react-router-dom';
+
+import StockList from './StockList';
 
 class Portfolio extends Component {
     static propTypes = {
@@ -17,6 +20,8 @@ class Portfolio extends Component {
                 <h2>Portfolio</h2>
                 <p>Cash On Hand: ${(cashOnHand/100).toFixed(2)}</p>
                 <p>Portfolio Worth: ${((portfolioWorth + cashOnHand)/100).toFixed(2)}</p>
+                <StockList />
+                <Link to="/">Return to Dashboard</Link>
             </div>
         );
     }

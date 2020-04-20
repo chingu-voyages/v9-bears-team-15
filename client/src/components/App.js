@@ -9,12 +9,12 @@ import PrivateRoute from './routing/PrivateRoute';
 
 /* Components */
 import Dashboard from './stocks/Dashboard';
-// import StockSearch from './stocks/StockSearch';
-// import StockList from './stocks/StockList';
+import Portfolio from './stocks/Portfolio';
 import Login from './accounts/Login';
 import Register from './accounts/Register';
 import Header from './layout/Header';
 import './app.scss';
+import { StockSearch } from './stocks/StockSearch';
 
 class App extends Component {
     render() {
@@ -25,9 +25,11 @@ class App extends Component {
                         <Header />
                         <div className="container">
                             <Switch>
-                                <PrivateRoute exact path='/' component={Dashboard} />
                                 <Route exact path='/login' component={Login} />
                                 <Route exact path='/register' component={Register} /> 
+                                <PrivateRoute exact path='/' component={Dashboard} />
+                                <PrivateRoute exact path="/portfolio" component={Portfolio}/>
+                                <PrivateRoute exact path="/lookup" component={StockSearch}/>
                             </Switch>
                         </div>
                     </Fragment>
