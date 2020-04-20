@@ -19,9 +19,10 @@ class Dashboard extends Component {
     }
 
     render() {
-        console.log(this.props.stocks);
         const cashOnHand = parseFloat(this.props.cashOnHand);
         let portfolioWorth = parseFloat(this.props.stocks.reduce((acc, stock) => acc += parseFloat(parseFloat(stock.currentPrice).toFixed(2)) * stock.quantity, 0));
+        let totalValue = ((portfolioWorth + cashOnHand)/100).toFixed(2);
+        console.log(totalValue );
         return (
             <div className="dashboard">
                 <h1>${((portfolioWorth + cashOnHand)/100).toFixed(2)}</h1>
