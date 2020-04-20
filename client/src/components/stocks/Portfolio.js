@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropType from 'prop-types';
+import './portfolio.scss';
 
 class Portfolio extends Component {
     static propTypes = {
@@ -12,7 +13,7 @@ class Portfolio extends Component {
         const cashOnHand = parseFloat(this.props.cashOnHand);
         let portfolioWorth = parseFloat(this.props.stocks.reduce((acc, stock) => acc += parseFloat(parseFloat(stock.currentPrice).toFixed(2)) * stock.quantity, 0));
         return (
-            <div>
+            <div className="card">
                 <h2>Portfolio</h2>
                 <p>Cash On Hand: ${(cashOnHand/100).toFixed(2)}</p>
                 <p>Portfolio Worth: ${((portfolioWorth + cashOnHand)/100).toFixed(2)}</p>
